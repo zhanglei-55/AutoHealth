@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页面</title>
+    <style>
+        /* 从 styles.css 中提取的样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            background-image: url('static/images/赛博朋克风格奇幻少女 集原美电脑4k壁纸3840x2160_彼岸图网.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 100px auto 0;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        // 从 scripts.js 中提取的登录逻辑
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('loginForm');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                // 模拟登录请求
+                fetch("/login", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        window.location.href = "/health"; // 登录成功后跳转到健康打卡页面
+                    } else {
+                        alert("登录失败：请检查用户名和密码");
+                    }
+                })
+                .catch(error => {
+                    alert(`网络错误：${error.message}`);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>登录</h1>
+
+    <!-- 消息提示 -->
+    <div id="message-container"></div>
+
+    <form method="post" id="loginForm">
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="submit-btn">登录</button>
+    </form>
+</div>
+
+<!-- 声明 -->
+<div style="text-align: center; margin-top: 20px;">
+    <p>本产品只是测试登录的工具,堆积造成的影响概不负责</p>
+</div>
+</body>
+</html>
