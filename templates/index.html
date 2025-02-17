@@ -3,38 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>健康打卡</title>
+    <title>健康打卡系统</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script src="../templates/scripts.js" defer></script>
 </head>
 <body>
-    <form id="healthForm">
-        <!-- 表单字段 -->
-        <input type="text" name="u_name" placeholder="姓名" required>
-        <input type="text" name="u_addr" placeholder="地址" required>
-        <input type="text" name="vname" placeholder="学号" required>
-        <select name="xq1" required>
-            <option value="">请选择校区</option>
-            <option value="本人目前所在校区">本人目前所在校区</option>
-            <option value="毕业班顶岗实习己离校">毕业班顶岗实习己离校</option>
-            <option value="坞城校区">坞城校区</option>
-            <option value="南中环校区">南中环校区</option>
-            <option value="长风校区">长风校区</option>
-            <option value="榆次校区">榆次校区</option>
-        </select>
-        <select name="ua_choice" required>
-            <option value="1">iPhone</option>
-            <option value="2">vivo 2000</option>
-        </select>
-        <input type="text" name="vw" placeholder="体温1" required>
-        <input type="text" name="vj" placeholder="体温2" required>
-        <input type="text" name="tw1" placeholder="体温3" required>
-        <input type="text" name="tw2" placeholder="体温4" required>
-        <select name="ycx3" required>
-            <option value="">请选择健康状态</option>
-            <option value="0">异常</option>
-            <option value="1">正常</option>
-        </select>
-        <textarea name="yc7" placeholder="病情说明"></textarea>
-        <button type="submit">提交</button>
+<div class="container">
+    <h1>健康打卡系统</h1>
+
+    <!-- 消息提示 -->
+    <div id="message-container"></div>
+
+    <form method="post">
+        <div class="form-columns">
+            <!-- 左列 -->
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="u_name">身份证号</label>
+                    <input type="text" id="u_name" name="u_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="u_addr">当前地址</label>
+                    <input type="text" id="u_addr" name="u_addr" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="vname">姓名</label>
+                    <input type="text" id="vname" name="vname" required>
+                    <label>如何获取地址?微信发送位置</label>
+                    <a href="https://lbs.qq.com/tool/getpoint/get-point.html">获取地址方法:点击腾讯坐标拾取器！输出地址获取经纬度</a>
+                </div>
+            </div>
+
+            <!-- 右列 -->
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="ua_choice">设备类型</label>
+                    <select id="ua_choice" name="ua_choice" required>
+                        <option value="">请选择设备类型</option>
+                        <option value="1">苹果设备</option>
+                        <option value="2">安卓设备</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>地理位置</label>
+                    <div class="input-group">
+                        <input type="text" id="vw" name="vw" placeholder="纬度" required>
+                        <input type="text" id="vj" name="vj" placeholder="经度" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>体温测量</label>
+                    <div class="input-group">
+                        <input type="number" id="tw1" name="tw1" placeholder="整数部分" min="34" max="42" required>
+                        <input type="number" id="tw2" name="tw2" placeholder="小数部分" min="0" max="9" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="xq1">当前所在校区：</label>
+                    <select id="xq1" name="xq1" required>
+                        <option value="">请选择校区</option>
+                        <option value="本人目前所在校区">本人目前所在校区</option>
+                        <option value="毕业班顶岗实习己离校">毕业班顶岗实习己离校</option>
+                        <option value="坞城校区">坞城校区</option>
+                        <option value="南中环校区">南中环校区</option>
+                        <option value="长风校区">长风校区</option>
+                        <option value="榆次校区">榆次校区</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ycx3">健康状态</label>
+                    <select id="ycx3" name="ycx3" required>
+                        <option value="">请选择状态</option>
+                        <option value="1">健康</option>
+                        <option value="0">异常</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="yc7-container" style="display: none;">
+                    <label for="yc7">病情说明</label>
+                    <input type="text" id="yc7" name="yc7">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">立即打卡</button>
     </form>
+</div>
+
+<!-- 声明 -->
+<div style="text-align: center; margin-top: 20px;">
+    <p>本产品只是测试打卡的工具,堆积造成的影响概不负责</p>
+</div>
 </body>
 </html>
