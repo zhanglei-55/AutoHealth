@@ -1,133 +1,97 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>健康打卡</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('healthForm');
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const formData = new FormData(form);
-                const data = {};
-                formData.forEach((value, key) => {
-                    data[key] = value;
-                });
-
-                // 验证必填字段
-                const requiredFields = ['u_name', 'u_addr', 'vname', 'xq1', 'ua_choice', 'vw', 'vj', 'tw1', 'tw2', 'ycx3'];
-                for (const field of requiredFields) {
-                    if (!data[field]) {
-                        alert(`错误：${field.replace('_', ' ')} 不能为空！`);
-                        return;
-                    }
-                }
-
-                // 验证校区代号
-                const validCampuses = ["本人目前所在校区", "毕业班顶岗实习己离校", "坞城校区", "南中环校区", "长风校区", "榆次校区"];
-                if (!validCampuses.includes(data['xq1'])) {
-                    alert("错误：无效的校区代号");
-                    return;
-                }
-
-                // 验证健康状态
-                if (data['ycx3'] === '0' && !data['yc7']) {
-                    alert("错误：异常状态需要填写病情说明");
-                    return;
-                }
-
-                // 创建会话并配置请求头
-                const userAgents = {
-                    '1': "Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.56(0x18003855) NetType/WIFI Language/zh_CN",
-                    '2': "Mozilla/5.0 (Linux; Android 13; vivo 2000) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36"
-                };
-
-                const headers = {
-                    'User-Agent': userAgents[data['ua_choice']] || userAgents['2'],
-                    'Referer': 'http://fdcat.cn365vip.com/index.php?e=4',
-                    'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7'
-                };
-
-                // 登录请求
-                fetch("http://fdcat.cn365vip.com/addu.php", {
-                    method: 'POST',
-                    headers: headers,
-                    body: new URLSearchParams({
-                        'u_name': data['u_name'],
-                        'upwd': '111111'  // 固定密码
-                    }),
-                    redirect: 'manual'
-                })
-                .then(response => {
-                    if (response.status !== 302) {
-                        alert("登录失败：请检查身份证号");
-                        return;
-                    }
-                    // 提交健康信息
-                    return fetch("http://fdcat.cn365vip.com/adddt_s2_up.php", {
-                        method: 'POST',
-                        headers: headers,
-                        body: new URLSearchParams({
-                            'u_addr': data['u_addr'],
-                            'vname': data['vname'],
-                            'vsex': '0',
-                            'vw': data['vw'],
-                            'vj': data['vj'],
-                            'tw1': data['tw1'],
-                            'tw2': data['tw2'],
-                            'xq1': data['xq1'],
-                            'yc3': '0',
-                            'ycx3': data['ycx3'],
-                            'yc7': data['yc7']
-                        })
-                    });
-                })
-                .then(response => response.text())
-                .then(text => {
-                    if (text.includes("数据已提交")) {
-                        alert("健康打卡成功！");
-                    } else {
-                        alert("提交失败：服务器返回异常响应");
-                    }
-                })
-                .catch(error => {
-                    alert(`网络错误：${error.message}`);
-                });
-            });
-        });
-    </script>
+    <title>健康打卡系统</title>
+    <link rel="stylesheet" href="../static/styles.css">
 </head>
 <body>
-    <form id="healthForm">
-        <!-- 表单字段 -->
-        <input type="text" name="u_name" placeholder="姓名" required>
-        <input type="text" name="u_addr" placeholder="地址" required>
-        <input type="text" name="vname" placeholder="学号" required>
-        <select name="xq1" required>
-            <option value="">请选择校区</option>
-            <option value="本人目前所在校区">本人目前所在校区</option>
-            <option value="毕业班顶岗实习己离校">毕业班顶岗实习己离校</option>
-            <option value="坞城校区">坞城校区</option>
-            <option value="南中环校区">南中环校区</option>
-            <option value="长风校区">长风校区</option>
-            <option value="榆次校区">榆次校区</option>
-        </select>
-        <select name="ua_choice" required>
-            <option value="1">iPhone</option>
-            <option value="2">vivo 2000</option>
-        </select>
-        <input type="text" name="vw" placeholder="体温1" required>
-        <input type="text" name="vj" placeholder="体温2" required>
-        <input type="text" name="tw1" placeholder="体温3" required>
-        <input type="text" name="tw2" placeholder="体温4" required>
-        <select name="ycx3" required>
-            <option value="">请选择健康状态</option>
-            <option value="0">异常</option>
-            <option value="1">正常</option>
-        </select>
-        <textarea name="yc7" placeholder="病情说明"></textarea>
-        <button type="submit">提交</button>
-    </form>
+    <div class="container">
+        <h1>健康打卡系统</h1>
+        <form method="post">
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="u_name">身份证号</label>
+                    <input type="text" id="u_name" name="u_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="u_addr">当前地址</label>
+                    <input type="text" id="u_addr" name="u_addr" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="vname">姓名</label>
+                    <input type="text" id="vname" name="vname" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="xq1">校区代号</label>
+                    <input type="text" id="xq1" name="xq1" required>
+                </div>
+            </div>
+
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="ua_choice">设备类型</label>
+                    <select id="ua_choice" name="ua_choice" required>
+                        <option value="">请选择设备类型</option>
+                        <option value="1">安卓设备</option>
+                        <option value="2">苹果设备</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>地理位置</label>
+                    <div class="input-group">
+                        <input type="text" id="vw" name="vw" placeholder="纬度" required>
+                        <input type="text" id="vj" name="vj" placeholder="经度" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>体温测量</label>
+                    <div class="input-group">
+                        <input type="text" id="tw1" name="tw1" placeholder="整数部分" required>
+                        <input type="text" id="tw2" name="tw2" placeholder="小数部分" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ycx3">健康状态</label>
+                    <select id="ycx3" name="ycx3" required onchange="toggleYc7Required()">
+                        <option value="">请选择健康状态</option>
+                        <option value="1">健康</option>
+                        <option value="0">异常</option>
+                    </select>
+                </div>
+
+                <div class="form-group dynamic-field" id="yc7-container">
+                    <label for="yc7">病情说明</label>
+                    <input type="text" id="yc7" name="yc7">
+                </div>
+            </div>
+
+            <button type="submit">立即打卡</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleYc7Required() {
+            const ycx3 = document.getElementById('ycx3').value;
+            const yc7Container = document.getElementById('yc7-container');
+            const yc7Input = document.getElementById('yc7');
+
+            if (ycx3 === '0') {
+                yc7Container.classList.add('active');
+                yc7Input.required = true;
+            } else {
+                yc7Container.classList.remove('active');
+                yc7Input.required = false;
+            }
+        }
+    </script>
 </body>
 </html>
